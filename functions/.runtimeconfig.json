@@ -1,0 +1,6 @@
+{
+    "stripe": {
+        "secret_key": "sk_test_your_secret_key_here",
+        "webhook_secret": "whsec_your_webhook_secret_here"
+    }
+}
