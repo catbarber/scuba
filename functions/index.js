@@ -1,174 +1,186 @@
-const functions = require('firebase-functions');
-const admin = require('firebase-admin');
+// functions/index.js
+const functions = require('firebase-functions')
+const admin = require('firebase-admin')
+const Stripe = require('stripe')
+const cors = require('cors')({ origin: true })
 
-// Initialize Admin SDK first (minimal initialization)
-admin.initializeApp();
+admin.initializeApp()
+const stripe = Stripe(functions.config().stripe.secret_key)
 
-// Lazy load heavy dependencies
-let stripe, express, cors;
+// Create Payment Intent
+exports.createPaymentIntent = functions.https.onCall(async (data, context) => {
+  try {
+    const { amount, currency = 'usd', metadata = {} } = data
 
-const getStripe = () => {
-    if (!stripe) {
-        stripe = require('stripe')(functions.config().stripe?.secret_key || process.env.STRIPE_SECRET_KEY);
+    // Validate authentication
+    if (!context.auth) {
+      throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated')
     }
-    return stripe;
-};
 
-const getExpress = () => {
-    if (!express) {
-        express = require('express');
+    // Validate amount
+    if (!amount || amount < 50) { // Minimum $0.50
+      throw new functions.https.HttpsError('invalid-argument', 'Invalid amount')
     }
-    return express;
-};
 
-const getCors = () => {
-    if (!cors) {
-        cors = require('cors');
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: Math.round(amount * 100), // Convert to cents
+      currency,
+      metadata: {
+        ...metadata,
+        userId: context.auth.uid,
+        createdAt: new Date().toISOString()
+      },
+      automatic_payment_methods: {
+        enabled: true,
+      },
+    })
+
+    // Log payment intent creation
+    await admin.firestore().collection('paymentLogs').add({
+      userId: context.auth.uid,
+      paymentIntentId: paymentIntent.id,
+      amount: amount,
+      status: 'created',
+      createdAt: new Date().toISOString()
+    })
+
+    return {
+      clientSecret: paymentIntent.client_secret,
+      paymentIntentId: paymentIntent.id
     }
-    return cors;
-};
+  } catch (error) {
+    console.error('Error creating payment intent:', error)
+    throw new functions.https.HttpsError('internal', error.message)
+  }
+})
 
-// Simple health check endpoint
-exports.health = functions.https.onRequest(async (req, res) => {
-    res.status(200).json({ status: 'healthy', timestamp: new Date().toISOString() });
-});
-
-// Create donation intent (minimal version)
-exports.createDonationIntent = functions.https.onRequest(async (req, res) => {
-    // Enable CORS
-    getCors()({ origin: true })(req, res, async () => {
-        try {
-            const { amount, currency, donorName, donorEmail } = req.body;
-
-            // Validate required fields
-            if (!amount || !donorEmail) {
-                return res.status(400).json({ error: 'Missing required fields: amount and donorEmail' });
-            }
-
-            if (amount < 50) {
-                return res.status(400).json({ error: 'Amount must be at least $0.50' });
-            }
-
-            const stripeInstance = getStripe();
-
-            const paymentIntent = await stripeInstance.paymentIntents.create({
-                amount: parseInt(amount),
-                currency: currency || 'usd',
-                metadata: {
-                    donorName: donorName || 'Anonymous',
-                    donorEmail,
-                    type: 'donation'
-                }
-            });
-
-            // Log to Firestore (non-blocking)
-            try {
-                await admin.firestore().collection('donation_attempts').add({
-                    amount: amount / 100,
-                    donorName: donorName || 'Anonymous',
-                    donorEmail,
-                    status: 'created',
-                    createdAt: admin.firestore.FieldValue.serverTimestamp(),
-                    stripePaymentIntentId: paymentIntent.id
-                });
-            } catch (firestoreError) {
-                console.error('Firestore logging error:', firestoreError);
-                // Don't fail the request if logging fails
-            }
-
-            res.json({
-                clientSecret: paymentIntent.client_secret,
-                amount: paymentIntent.amount
-            });
-
-        } catch (error) {
-            console.error('Error creating donation intent:', error);
-            res.status(500).json({ error: 'Internal server error' });
-        }
-    });
-});
-
-// Webhook handler
+// Webhook handler for Stripe events
 exports.stripeWebhook = functions.https.onRequest(async (req, res) => {
-    const expressApp = getExpress();
-    const app = expressApp();
+  const sig = req.headers['stripe-signature']
+  let event
 
-    app.use('/webhook', expressApp.raw({ type: 'application/json' }));
+  try {
+    event = stripe.webhooks.constructEvent(
+      req.rawBody,
+      sig,
+      functions.config().stripe.webhook_secret
+    )
+  } catch (err) {
+    console.error(`Webhook signature verification failed.`, err.message)
+    return res.status(400).send(`Webhook Error: ${err.message}`)
+  }
 
-    app.post('/webhook', async (request, response) => {
-        const sig = request.headers['stripe-signature'];
-        let event;
+  try {
+    switch (event.type) {
+      case 'payment_intent.succeeded':
+        await handlePaymentIntentSucceeded(event.data.object)
+        break
+      case 'payment_intent.payment_failed':
+        await handlePaymentIntentFailed(event.data.object)
+        break
+      case 'payment_intent.canceled':
+        await handlePaymentIntentCanceled(event.data.object)
+        break
+      default:
+        console.log(`Unhandled event type: ${event.type}`)
+    }
 
-        try {
-            const stripeInstance = getStripe();
-            event = stripeInstance.webhooks.constructEvent(
-                request.body,
-                sig,
-                functions.config().stripe?.webhook_secret || process.env.STRIPE_WEBHOOK_SECRET
-            );
-        } catch (err) {
-            console.log(`Webhook signature verification failed.`, err.message);
-            return response.status(400).send(`Webhook Error: ${err.message}`);
-        }
+    res.json({ received: true })
+  } catch (error) {
+    console.error('Error processing webhook:', error)
+    res.status(500).send('Webhook handler failed')
+  }
+})
 
-        if (event.type === 'payment_intent.succeeded') {
-            const paymentIntent = event.data.object;
+async function handlePaymentIntentSucceeded(paymentIntent) {
+  const { id, amount, metadata } = paymentIntent
+  
+  // Update booking status in Firestore
+  if (metadata.bookingId) {
+    await admin.firestore().collection('bookings').doc(metadata.bookingId).update({
+      paymentStatus: 'completed',
+      paymentIntentId: id,
+      amountPaid: amount / 100,
+      paidAt: new Date().toISOString()
+    })
+  }
 
-            try {
-                await admin.firestore().collection('donations').add({
-                    amount: paymentIntent.amount / 100,
-                    donorName: paymentIntent.metadata.donorName,
-                    donorEmail: paymentIntent.metadata.donorEmail,
-                    stripePaymentIntentId: paymentIntent.id,
-                    status: 'completed',
-                    createdAt: admin.firestore.FieldValue.serverTimestamp()
-                });
-                console.log(`Donation recorded: ${paymentIntent.amount} from ${paymentIntent.metadata.donorEmail}`);
-            } catch (error) {
-                console.error('Error recording donation:', error);
-            }
-        }
+  // Log successful payment
+  await admin.firestore().collection('paymentLogs').add({
+    paymentIntentId: id,
+    userId: metadata.userId,
+    amount: amount / 100,
+    status: 'succeeded',
+    bookingId: metadata.bookingId,
+    completedAt: new Date().toISOString()
+  })
 
-        response.json({ received: true });
-    });
+  // Send confirmation email (you can integrate with SendGrid or similar here)
+  console.log(`Payment succeeded for booking: ${metadata.bookingId}`)
+}
 
-    app(req, res);
-});
+async function handlePaymentIntentFailed(paymentIntent) {
+  const { id, last_payment_error, metadata } = paymentIntent
 
-// Optional: Keep your existing API structure but simplified
-exports.api = functions.https.onRequest(async (req, res) => {
-    const expressApp = getExpress();
-    const cors = getCors();
-    const app = expressApp();
+  await admin.firestore().collection('paymentLogs').add({
+    paymentIntentId: id,
+    userId: metadata.userId,
+    amount: paymentIntent.amount / 100,
+    status: 'failed',
+    error: last_payment_error?.message,
+    failedAt: new Date().toISOString()
+  })
 
-    app.use(cors({ origin: true }));
-    app.use(expressApp.json());
+  // Update booking status
+  if (metadata.bookingId) {
+    await admin.firestore().collection('bookings').doc(metadata.bookingId).update({
+      paymentStatus: 'failed',
+      paymentError: last_payment_error?.message
+    })
+  }
+}
 
-    app.post('/create-donation-intent', async (req, res) => {
-        try {
-            const { amount, currency, donorName, donorEmail } = req.body;
+async function handlePaymentIntentCanceled(paymentIntent) {
+  const { id, metadata } = paymentIntent
 
-            if (!amount || !donorEmail) {
-                return res.status(400).json({ error: 'Missing required fields' });
-            }
+  await admin.firestore().collection('paymentLogs').add({
+    paymentIntentId: id,
+    userId: metadata.userId,
+    amount: paymentIntent.amount / 100,
+    status: 'canceled',
+    canceledAt: new Date().toISOString()
+  })
 
-            const stripeInstance = getStripe();
-            const paymentIntent = await stripeInstance.paymentIntents.create({
-                amount: parseInt(amount),
-                currency: currency || 'usd',
-                metadata: { donorName: donorName || 'Anonymous', donorEmail, type: 'donation' }
-            });
+  if (metadata.bookingId) {
+    await admin.firestore().collection('bookings').doc(metadata.bookingId).update({
+      paymentStatus: 'canceled'
+    })
+  }
+}
 
-            res.json({ clientSecret: paymentIntent.client_secret });
-        } catch (error) {
-            console.error('Error:', error);
-            res.status(500).json({ error: 'Internal server error' });
-        }
-    });
+// Function to create a booking
+exports.createBooking = functions.https.onCall(async (data, context) => {
+  if (!context.auth) {
+    throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated')
+  }
 
-    app.get('/health', (req, res) => {
-        res.json({ status: 'ok', service: 'scuba-diving-api' });
-    });
+  const { tour, bookingData, totalAmount } = data
 
-    app(req, res);
-});
+  try {
+    const bookingRef = await admin.firestore().collection('bookings').add({
+      userId: context.auth.uid,
+      tour: tour,
+      bookingData: bookingData,
+      totalAmount: totalAmount,
+      status: 'pending',
+      paymentStatus: 'pending',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    })
+
+    return { bookingId: bookingRef.id }
+  } catch (error) {
+    console.error('Error creating booking:', error)
+    throw new functions.https.HttpsError('internal', 'Failed to create booking')
+  }
+})

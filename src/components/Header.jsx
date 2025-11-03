@@ -10,7 +10,8 @@ const Header = () => {
         { path: '/', label: 'Home' },
         { path: '/tours', label: 'Dive Tours' },
         { path: '/donate', label: 'Support Conservation' },
-        { path: '/about', label: 'About Us' }
+        { path: '/about', label: 'About Us' },
+        { path: '/contact', label: 'Contact Us' },
     ]
 
     return (
@@ -38,7 +39,7 @@ const Header = () => {
                         fontSize: '1.5rem'
                     }}>
                         <Anchor size={32} style={{ marginRight: '10px' }} />
-                        Caribbean Dive Masters
+                        Caribbean Scuba Diving
                     </Link>
 
                     {/* Desktop Navigation */}
