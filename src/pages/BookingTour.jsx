@@ -93,6 +93,97 @@ const BookingTour = () => {
       includes: ["Night Guide", "Underwater Lights", "Safety Equipment", "Hot Drinks"],
       requirements: ["Open Water Certification", "Night Dive Experience", "Medical Clearance"]
     },
+    {
+      id: 4,
+      name: "Heritage & Nature Tour - Tobago (Full Day)",
+      description: "A comprehensive tour exploring Tobago's rich cultural heritage and stunning natural landscapes.",
+      price: 90,
+      duration: "8 hours",
+      groupSize: "5 persons",
+      difficulty: "Beginner",
+      location: "Various Locations across Tobago.",
+      rating: 4.8,
+      image: "https://images.unsplash.com/photo-1587502536575-6dfba0c82b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
+      highlights: ["Key historical sites.", "Connect with the locals", "Island Photography", "Relaxing and exciting experience"],
+      includes: ["Lunch Meal", "Hot Drinks"],
+      requirements: ["Open Water Certification", "Night Dive Experience", "Medical Clearance"]
+    },{
+      id: 5,
+      name: "Birdwatcher's Paradise Tour - Tobago (Half Day)",
+      description: "Explore Tobago's diverse avian species with expert guides on this half-day birdwatching tour.",
+      price: 80,
+      duration: "4 hours",
+      groupSize: "5 divers",
+      difficulty: "Beginner",
+      location: "Various Locations across Tobago.",
+      rating: 4.8,
+      image: "https://images.unsplash.com/photo-1587502536575-6dfba0c82b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
+      highlights: ["Nocturnal Species", "Bioluminescence", "Unique Photography", "Thrilling Experience"],
+      includes: ["Night Guide", "Underwater Lights", "Safety Equipment", "Hot Drinks"],
+      requirements: ["Open Water Certification", "Night Dive Experience", "Medical Clearance"]
+    },{
+      id: 6,
+      name: "Private & Custom Charter - Tobago (Flexible Duration)",
+      description: "A private vehicle and guide for families, couples, or small groups to explore Tobago at your own pace. Wedding parties, beach hopping)",
+      price: 1400,
+      duration: "8 hours",
+      groupSize: "20 divers",
+      difficulty: "Beginner",
+      location: "Various Locations across Tobago.",
+      rating: 4.8,
+      image: "https://images.unsplash.com/photo-1587502536575-6dfba0c82b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
+      highlights: ["Nocturnal Species", "Bioluminescence", "Unique Photography", "Thrilling Experience"],
+      includes: ["Night Guide", "Underwater Lights", "Safety Equipment", "Hot Drinks"],
+      requirements: ["Open Water Certification", "Night Dive Experience", "Medical Clearance"]
+    },{
+      id: 7,
+      name: "Sunrise/Sunset boat tours - Tobago",
+      description: "Witness the sea come alive at night with nocturnal creatures and bioluminescent displays. A truly magical experience for adventurous divers.",
+      price: 80,
+      duration: "2 hours",
+      groupSize: "5 persons",
+      difficulty: "Beginner",
+      location: "Various Locations across Tobago.",
+      rating: 4.8,
+      image: "https://images.unsplash.com/photo-1587502536575-6dfba0c82b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
+      highlights: ["Nocturnal Species", "Bioluminescence", "Unique Photography", "Thrilling Experience"],
+      includes: ["Night Guide", "Underwater Lights", "Safety Equipment", "Hot Drinks"],
+      requirements: ["Open Water Certification", "Night Dive Experience", "Medical Clearance"]
+    },{
+      id: 8,
+      name: "Cullinary Tours - Tobago",
+      description: "A food experience to never forget. Explore the local cuisine with visits to popular eateries and hidden gems.",
+      price: 80,
+      duration: "2.5 hours",
+      groupSize: "5 persons",
+      difficulty: "Beginner",
+      location: "Various Locations across Tobago.",
+      rating: 4.8,
+      image: "https://images.unsplash.com/photo-1587502536575-6dfba0c82b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
+      highlights: ["Nocturnal Species", "Bioluminescence", "Unique Photography", "Thrilling Experience"],
+      includes: ["Night Guide", "Underwater Lights", "Safety Equipment", "Hot Drinks"],
+      requirements: ["Open Water Certification", "Night Dive Experience", "Medical Clearance"]
+    },{
+      id: 9,
+      name: "Hiking Tours - Tobago",
+      description: "Explore Tobago's scenic trails with guided hikes suitable for all fitness levels, showcasing the island's natural beauty.",
+      price: 90,
+      duration: "5 hours",
+      groupSize: "5 persons",
+      difficulty: "Beginner",
+      location: "Various Locations across Tobago.",
+      rating: 4.8,
+      image: "https://images.unsplash.com/photo-1587502536575-6dfba0c82b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
+      highlights: ["Nocturnal Species", "Bioluminescence", "Unique Photography", "Thrilling Experience"],
+      includes: ["Night Guide", "Underwater Lights", "Safety Equipment", "Hot Drinks"],
+      requirements: ["Open Water Certification", "Night Dive Experience", "Medical Clearance"]
+    },
+    
+    
+    
+    
+    
+    
   ]
 
   useEffect(() => {

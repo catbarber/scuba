@@ -2,101 +2,6 @@ import React from 'react'
 import { useNavigate } from "react-router-dom";
 import { MapPin, Clock, Users, Star, Calendar } from 'lucide-react'
 
-const Tours = () => {
-    const tours = [
-        {
-            id: 1,
-            name: "Coral Garden Explorer - Tobago",
-            description: "Discover vibrant coral formations and tropical fish in our most popular shallow reef dive.",
-            price: 89,
-            duration: "3 hours",
-            groupSize: "6 divers",
-            difficulty: "Beginner",
-            location: "Buccoo Reef",
-            rating: 4.9,
-            image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
-            highlights: ["Colorful Corals", "Tropical Fish", "Perfect for Beginners", "Photography Friendly"]
-        },
-        {
-            id: 2,
-            name: "Ship Wreck 100ft Dive. - Tobago",
-            description: "Experience the thrill of drifting along dramatic underwater walls teeming with marine life.",
-            price: 129,
-            duration: "4 hours",
-            groupSize: "4 divers",
-            difficulty: "Advanced",
-            location: "Maverick Wreck",
-            rating: 4.95,
-            image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
-            highlights: ["Sunken ship", "One hundred feet dive", "Advanced Skills Required"]
-        },
-        {
-            id: 3,
-            name: "Night Dive Adventure - Tobago",
-            description: "Witness the sea come alive at night with nocturnal creatures and bioluminescent displays.",
-            price: 109,
-            duration: "2.5 hours",
-            groupSize: "5 divers",
-            difficulty: "Beginner",
-            location: "Buccoo Reef",
-            rating: 4.8,
-            image: "https://images.unsplash.com/photo-1587502536575-6dfba0c82b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
-            highlights: ["Nocturnal Species", "Bioluminescence", "Unique Photography", "Thrilling Experience"]
-        },
-    ]
-
-    return (
-        <div style={{ padding: '2rem 0', minHeight: '100vh' }}>
-            <div className="container">
-                <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-                    <h1 style={{
-                        fontSize: '2.5rem',
-                        marginBottom: '1rem',
-                        background: 'linear-gradient(45deg, var(--deep-blue), var(--caribbean-blue))',
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent'
-                    }}>
-                        Dive Tours & Experiences
-                    </h1>
-                    <p style={{ fontSize: '1.2rem', maxWidth: '600px', margin: '0 auto', lineHeight: '1.6', color: '#555' }}>
-                        Choose from our carefully curated dive experiences, each designed to showcase
-                        the unique beauty of Caribbean marine ecosystems.
-                    </p>
-                </div>
-
-                <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
-                    gap: '2rem',
-                    marginBottom: '3rem'
-                }}>
-                    {tours.map((tour) => (
-                        <TourCard key={tour.id} tour={tour} />
-                    ))}
-                </div>
-
-                <div style={{
-                    background: 'linear-gradient(135deg, var(--light-blue) 0%, var(--caribbean-blue) 100%)',
-                    borderRadius: '15px',
-                    padding: '3rem',
-                    textAlign: 'center',
-                    color: 'white'
-                }}>
-                    <h2 style={{ marginBottom: '1rem', fontSize: '2rem' }}>Ready to Dive In?</h2>
-                    <p style={{ marginBottom: '2rem', fontSize: '1.1rem', opacity: 0.9 }}>
-                        Contact us to book your adventure or ask about custom dive packages
-                    </p>
-                    <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-                        <button className="btn-secondary" style={{ fontSize: '1.1rem', padding: '12px 30px' }}>
-                            Contact Us
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    )
-}
-
 const TourCard = ({ tour }) => {
     const navigate = useNavigate();
 
@@ -109,14 +14,14 @@ const TourCard = ({ tour }) => {
             transition: 'transform 0.3s ease, box-shadow 0.3s ease',
             cursor: 'pointer'
         }}
-        onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'translateY(-5px)';
-            e.currentTarget.style.boxShadow = '0 15px 40px rgba(0, 168, 232, 0.15)';
-        }}
-        onMouseLeave={(e) => {
-            e.currentTarget.style.transform = 'translateY(0)';
-            e.currentTarget.style.boxShadow = '0 10px 30px rgba(0, 168, 232, 0.1)';
-        }}
+            onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-5px)';
+                e.currentTarget.style.boxShadow = '0 15px 40px rgba(0, 168, 232, 0.15)';
+            }}
+            onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 10px 30px rgba(0, 168, 232, 0.1)';
+            }}
         >
             <div style={{
                 height: '200px',
@@ -134,7 +39,7 @@ const TourCard = ({ tour }) => {
                     fontWeight: 'bold',
                     fontSize: '0.9rem'
                 }}>
-                    ${tour.price}
+                    ${tour.price} USD
                 </div>
                 <div style={{
                     position: 'absolute',
@@ -230,10 +135,10 @@ const TourCard = ({ tour }) => {
                     </div>
                 </div>
 
-                <button 
-                    onClick={() => navigate(`/booking/${tour.id}`)} 
-                    className="btn-primary" 
-                    style={{ 
+                <button
+                    onClick={() => navigate(`/booking/${tour.id}`)}
+                    className="btn-primary"
+                    style={{
                         width: '100%',
                         display: 'flex',
                         alignItems: 'center',
@@ -247,5 +152,179 @@ const TourCard = ({ tour }) => {
         </div>
     )
 }
+
+const Tours = () => {
+    const tours = [
+        {
+            id: 1,
+            name: "Coral Garden Explorer Dive [Day/Night] - Tobago",
+            description: "Discover vibrant coral formations and tropical fish in our most popular shallow reef dive.",
+            price: 120,
+            duration: "3 hours",
+            groupSize: "6 divers",
+            difficulty: "Beginner",
+            location: "Buccoo Reef",
+            rating: 4.9,
+            image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
+            highlights: ["Snorkeling Option", "Colorful Corals", "Tropical Fish", "Nocturnal Species", "Bioluminescence", "Perfect for Beginners", "Photography Friendly"]
+        },
+        {
+            id: 2,
+            name: "Ship Wreck 100ft Dive - Tobago",
+            description: "Experience the thrill of drifting along dramatic underwater walls teeming with marine life.",
+            price: 150,
+            duration: "3 hours",
+            groupSize: "4 divers",
+            difficulty: "Advanced",
+            location: "Maverick Wreck",
+            rating: 4.95,
+            image: "https://en.wikipedia.org/wiki/Shipwreck#/media/File:Titanic_wreck_bow.jpg",
+            highlights: ["Sunken Ship", "One Hundred Feet Dive", "Advanced Skills Required"]
+        },
+        // {
+        //     id: 3,
+        //     name: "Night Dive Adventure - Tobago",
+        //     description: "Witness the sea come alive at night with nocturnal creatures and bioluminescent displays.",
+        //     price: 109,
+        //     duration: "2.5 hours",
+        //     groupSize: "5 divers",
+        //     difficulty: "Beginner",
+        //     location: "Buccoo Reef",
+        //     rating: 4.8,
+        //     image: "https://images.unsplash.com/photo-1587502536575-6dfba0c82b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
+        //     highlights: ["Nocturnal Species", "Bioluminescence", "Unique Photography", "Thrilling Experience"]
+        // }, 
+        {
+            id: 4,
+            name: "Heritage & Nature Tour - Tobago",
+            description: "A comprehensive tour exploring Tobago's rich cultural heritage and stunning natural landscapes. Explore Tobago's diverse avian species with expert guides on this exciting tour.",
+            price: 90,
+            duration: "5 hours",
+            groupSize: "5 persons",
+            difficulty: "Everyone",
+            location: "Various Locations across Tobago.",
+            rating: 4.8,
+            image: "https://images.unsplash.com/photo-1587502536575-6dfba0c82b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
+            highlights: ["Key Historical Sites", "Bird Watching", "Nature Trails", "Beach Visits"]
+        },
+        // {
+        //     id: 5,
+        //     name: "Birdwatcher's Paradise Tour - Tobago",
+        //     description: "Explore Tobago's diverse avian species with expert guides on this half-day birdwatching tour.",
+        //     price: 80,
+        //     duration: "4 hours",
+        //     groupSize: "5 persons",
+        //     difficulty: "Beginner",
+        //     location: "Various Locations across Tobago.",
+        //     rating: 4.8,
+        //     image: "https://images.unsplash.com/photo-1587502536575-6dfba0c82b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
+        //     highlights: ["Avian Species", "Bird Watching", "Unique Photography", "Thrilling Experience"]
+        // }, 
+        // {
+        //     id: 6,
+        //     name: "Private & Custom Charter - Tobago",
+        //     description: "A private vehicle and guide for families, couples, or small groups to explore Tobago at your own pace. Wedding parties, beach hopping)",
+        //     price: 1400,
+        //     duration: "TBD",
+        //     groupSize: "N/A",
+        //     difficulty: "Everyone",
+        //     location: "Various Locations across Tobago.",
+        //     rating: 4.8,
+        //     image: "https://images.unsplash.com/photo-1587502536575-6dfba0c82b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
+        //     highlights: ["Weddings", "Wedding Parties", "Beach Hopping", "Connect with Locals", "Thrilling Experience"]
+        // },
+        // {
+        //     id: 7,
+        //     name: "Sunrise/Sunset boat tours - Tobago",
+        //     description: "A private vehicle and guide for families, couples, or small groups to explore Tobago at your own pace. Wedding parties, beach hopping)",
+        //     price: 80,
+        //     duration: "2 hours",
+        //     groupSize: "5 persons",
+        //     difficulty: "Beginner",
+        //     location: "Various Locations across Tobago.",
+        //     rating: 4.8,
+        //     image: "https://images.unsplash.com/photo-1587502536575-6dfba0c82b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
+        //     highlights: ["Sunrise Boat Tour", "Sunset Boat Tour", "Thrilling Experience"]
+        // },
+        // {
+        //     id: 8,
+        //     name: "Cullinary Tours - Tobago",
+        //     description: "A food experience to never forget. Explore the local cuisine with visits to popular eateries and hidden gems.",
+        //     price: 80,
+        //     duration: "2.5 hours",
+        //     groupSize: "5 persons",
+        //     difficulty: "Beginner",
+        //     location: "Various Locations across Tobago.",
+        //     rating: 4.8,
+        //     image: "https://images.unsplash.com/photo-1587502536575-6dfba0c82b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
+        //     highlights: ["Cullinary Tour", "Delicious Experience"]
+        // },
+        // {
+        //     id: 9,
+        //     name: "Hiking Tours - Tobago",
+        //     description: "Explore Tobago's scenic trails with guided hikes suitable for all fitness levels, showcasing the island's natural beauty.",
+        //     price: 90,
+        //     duration: "5 hours",
+        //     groupSize: "5 persons",
+        //     difficulty: "Beginner",
+        //     location: "Various Locations across Tobago.",
+        //     rating: 4.8,
+        //     image: "https://images.unsplash.com/photo-1587502536575-6dfba0c82b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
+        //     highlights: ["Hiking Tour", "Guided Trails", "Thrilling Experience"]
+        // },
+    ]
+
+    return (
+        <div style={{ padding: '2rem 0', minHeight: '100vh' }}>
+            <div className="container">
+                <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+                    <h1 style={{
+                        fontSize: '2.5rem',
+                        marginBottom: '1rem',
+                        background: 'linear-gradient(45deg, var(--deep-blue), var(--caribbean-blue))',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent'
+                    }}>
+                        Dive Tours & Experiences
+                    </h1>
+                    <p style={{ fontSize: '1.2rem', maxWidth: '600px', margin: '0 auto', lineHeight: '1.6', color: '#555' }}>
+                        Choose from our carefully curated dive experiences, each designed to showcase
+                        the unique beauty of Caribbean marine ecosystems.
+                    </p>
+                </div>
+
+                <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
+                    gap: '2rem',
+                    marginBottom: '3rem'
+                }}>
+                    {tours.map((tour) => (
+                        <TourCard key={tour.id} tour={tour} />
+                    ))}
+                </div>
+
+                <div style={{
+                    background: 'linear-gradient(135deg, var(--light-blue) 0%, var(--caribbean-blue) 100%)',
+                    borderRadius: '15px',
+                    padding: '3rem',
+                    textAlign: 'center',
+                    color: 'white'
+                }}>
+                    <h2 style={{ marginBottom: '1rem', fontSize: '2rem' }}>Ready to Dive In?</h2>
+                    <p style={{ marginBottom: '2rem', fontSize: '1.1rem', opacity: 0.9 }}>
+                        Contact us to book your adventure or ask about custom dive packages
+                    </p>
+                    <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+                        <button className="btn-secondary" style={{ fontSize: '1.1rem', padding: '12px 30px' }}>
+                            Contact Us
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
+
 
 export default Tours

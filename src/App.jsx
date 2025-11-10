@@ -6,10 +6,12 @@ import Home from './pages/Home'
 import Tours from './pages/Tours'
 import Donate from './pages/Donate'
 import About from './pages/About'
-import { BookingProvider } from './contexts/BookingContext'
+import NotFoundPage from './pages/NotFoundPage'
 import './index.css'
 import BookingTour from './pages/BookingTour'
 import Contact from './pages/Contact'
+import { PaymentProvider } from './contexts/PaymentContext'
+import { BookingProvider } from './contexts/BookingContext'
 
 function App() {
   return (
@@ -25,6 +27,7 @@ function App() {
               <Route path="/contact" element={<Contact />} />
               <Route path="/about" element={<About />} />
               <Route path="/booking/:id" element={<BookingTour />} />
+              <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </main>
           <Footer />

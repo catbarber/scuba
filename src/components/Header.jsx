@@ -27,6 +27,7 @@ const Header = () => {
                 <nav style={{
                     display: 'flex',
                     justifyContent: 'space-between',
+
                     alignItems: 'center',
                     padding: '1rem 0'
                 }}>
@@ -39,11 +40,11 @@ const Header = () => {
                         fontSize: '1.5rem'
                     }}>
                         <Anchor size={32} style={{ marginRight: '10px' }} />
-                        Caribbean Scuba Diving
+                        AquaDeep Tobago Tours
                     </Link>
 
                     {/* Desktop Navigation */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
+                    <div className="desk-nav" style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
                         {navItems.map((item) => (
                             <Link
                                 key={item.path}

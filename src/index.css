@@ -103,6 +103,10 @@ body {
     font-size: 0.9rem;
   }
 
+  .desk-nav {
+    display: none !important;
+  }
+
   .mobile-menu-button {
     display: block !important;
   }
