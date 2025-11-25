@@ -1,5 +1,6 @@
 import React from 'react'
 import { Anchor, Phone, Mail, MapPin } from 'lucide-react'
+import AdComponent from './AdComponent/AdComponent'
 
 const Footer = () => {
     return (
@@ -8,13 +9,20 @@ const Footer = () => {
             color: 'white',
             padding: '3rem 0 1rem'
         }}>
+
+
+            <div style={{ width: "100vw", display: "center", justifyContent: "center", justifyItems: "center", alignContent: "center" }}><AdComponent /></div>
+
             <div className="container">
+
                 <div style={{
                     display: 'grid',
                     gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
                     gap: '2rem',
                     marginBottom: '2rem'
                 }}>
+
+
                     <div>
                         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem' }}>
                             <Anchor size={28} style={{ marginRight: '10px' }} />
