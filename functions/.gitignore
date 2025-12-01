@@ -1,2 +1,16 @@
+# Environment variables
+.env
+.env.local
+
+# Firebase
+.firebase/
+*.firebaserc
+
+# Node.js
 node_modules/
-*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Logs
+*.log

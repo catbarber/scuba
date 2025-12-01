@@ -1,3 +1,7 @@
+# Environment files
+.env
+/functions/.env
+
 # Logs
 logs
 *.log

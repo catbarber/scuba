@@ -6,6 +6,7 @@ import { getAuth } from 'firebase/auth'
 import { getAnalytics } from 'firebase/analytics'
 import { getPerformance } from 'firebase/performance'
 
+//web app's Firebase configuration
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -14,18 +15,11 @@ const firebaseConfig = {
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
   appId: import.meta.env.VITE_FIREBASE_APP_ID
 }
-
 // Initialize Firebase
 const app = initializeApp(firebaseConfig)
 
 // Initialize Firebase services
-export const db = getFirestore(app)
-export const functions = getFunctions(app)
-export const auth = getAuth(app)
+const db = getFirestore(app)
+const functions = getFunctions(app)
 
-// Initialize Analytics and Performance only in production
-export const analytics = import.meta.env.PROD ? getAnalytics(app) : null
-export const performance = import.meta.env.PROD ? getPerformance(app) : null
-
-// Export app instance
-export default app
+export { app, db, functions }
